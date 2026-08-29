@@ -62,3 +62,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260526163538-3dc84a4a5aaa // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
+
+replace github.com/refraction-networking/utls v1.8.3-0.20260301010127-aa6edf4b11af => github.com/Pideo1/paccf v0.0.0-20260829080418-14ffb59e6345

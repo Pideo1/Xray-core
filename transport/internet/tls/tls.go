@@ -171,17 +171,10 @@ func init() {
 		}
 		i++
 	}
-	weights := utls.DefaultWeights
-	weights.TLSVersMax_Set_VersionTLS13 = 1
-	weights.FirstKeyShare_Set_CurveP256 = 0
-	randomized := utls.HelloRandomizedALPN
-	randomized.Seed, _ = utls.NewPRNGSeed()
-	randomized.Weights = &weights
-	randomizednoalpn := utls.HelloRandomizedNoALPN
-	randomizednoalpn.Seed, _ = utls.NewPRNGSeed()
-	randomizednoalpn.Weights = &weights
-	PresetFingerprints["randomized"] = &randomized
-	PresetFingerprints["randomizednoalpn"] = &randomizednoalpn
+	// "randomized" 和 "randomizednoalpn" 指向 Bun 指纹，
+	// 因为 utls 原生 randomized 指纹有 bug，这里重定向为其替代方案
+	PresetFingerprints["randomized"] = &utls.HelloBun_1_3_14
+	PresetFingerprints["randomizednoalpn"] = &utls.HelloBun_1_3_14
 }
 
 func GetFingerprint(name string) (fingerprint *utls.ClientHelloID) {
@@ -210,6 +203,7 @@ var PresetFingerprints = map[string]*utls.ClientHelloID{
 	"edge":             &utls.HelloEdge_Auto,
 	"360":              &utls.Hello360_Auto,
 	"qq":               &utls.HelloQQ_Auto,
+	"bun":              &utls.HelloBun_1_3_14,
 	"random":           nil,
 	"randomized":       nil,
 	"randomizednoalpn": nil,
@@ -228,7 +222,8 @@ var ModernFingerprints = map[string]*utls.ClientHelloID{
 	"helloedge_106":    &utls.HelloEdge_106,
 	"hellosafari_26_3": &utls.HelloSafari_26_3,
 	"hello360_11_0":    &utls.Hello360_11_0,
-	"helloqq_11_1":     &utls.HelloQQ_11_1,
+	"helloqq_3_9_0":    &utls.HelloQQ_3_9_0,
+	"hellobun_1_3_14":  &utls.HelloBun_1_3_14,
 }
 
 var OtherFingerprints = map[string]*utls.ClientHelloID{
