@@ -171,10 +171,17 @@ func init() {
 		}
 		i++
 	}
-	// "randomized" 和 "randomizednoalpn" 指向 Bun 指纹，
-	// 因为 utls 原生 randomized 指纹有 bug，这里重定向为其替代方案
-	PresetFingerprints["randomized"] = &utls.HelloBun_1_3_14
-	PresetFingerprints["randomizednoalpn"] = &utls.HelloBun_1_3_14
+	weights := utls.DefaultWeights
+	weights.TLSVersMax_Set_VersionTLS13 = 1
+	weights.FirstKeyShare_Set_CurveP256 = 0
+	randomized := utls.HelloRandomizedALPN
+	randomized.Seed, _ = utls.NewPRNGSeed()
+	randomized.Weights = &weights
+	randomizednoalpn := utls.HelloRandomizedNoALPN
+	randomizednoalpn.Seed, _ = utls.NewPRNGSeed()
+	randomizednoalpn.Weights = &weights
+	PresetFingerprints["randomized"] = &randomized
+	PresetFingerprints["randomizednoalpn"] = &randomizednoalpn
 }
 
 func GetFingerprint(name string) (fingerprint *utls.ClientHelloID) {
